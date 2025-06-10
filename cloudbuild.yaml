@@ -2,11 +2,11 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
 args: ['build', '-t', 'asia-south1-docker.pkg.dev/hgu-variationdb/cloud-run-source-deploy/slgvd_frontend/slgvd-frontend:$SHORT_SHA', '.']
 
-- name: 'gcr.io/cloud-builder/docker'
+- name: 'gcr.io/cloud-builders/docker'
 args: ['push', 'asia-south1-docker.pkg.dev/hgu-variationdb/cloud-run-source-deploy/slgvd_frontend/slgvd-frontend:$SHORT_SHA']
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-entrypoint: glcoud
+entrypoint: gcloud
 args: [
   'run', 'deploy', 'slgvd_frontend',
   '--image', 'asia-south1-docker.pkg.dev/hgu-variationdb/cloud-run-source-deploy/slgvd_frontend/slgvd-frontend:$SHORT_SHA',
@@ -15,9 +15,9 @@ args: [
   '--network', 'default',
   '--subnet', 'default',
   '--allow-unauthenticated',
-  '--port=80',
-  '--set-env-vars',
-  'VITE_API_URL=https://slgvd-backend-575906908337.asia-south1.run.app'
+  '--port=8080'
 ]
 
 images: ['asia-south1-docker.pkg.dev/hgu-variationdb/cloud-run-source-deploy/slgvd_frontend/slgvd-frontend:$SHORT_SHA']
+
+# '--set-env-vars', 'VITE_API_URL=https://slgvd-backend-575906908337.asia-south1.run.app'
