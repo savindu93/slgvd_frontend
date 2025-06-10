@@ -23,6 +23,7 @@ export default function Navbar(){
     const navigate = useNavigate();
 
     const[open, setOpen] = useState(false);
+    const baseURL = 'https://slgvd-backend-575906908337.asia-south1.run.app';
 
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
@@ -33,7 +34,7 @@ export default function Navbar(){
     }
 
     const goToAPI = () => {
-        window.open("http://127.0.0.1:8000/swagger/", "_blank", "noopener,noreferrer");
+        window.open(`${baseURL}/swagger/`, "_blank", "noopener,noreferrer");
     }
 
     const goToDoc = () => {
