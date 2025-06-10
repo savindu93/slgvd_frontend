@@ -5,11 +5,11 @@ const ProgressBar = () => {
 
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState("");
-
+    const baseURL = 'slgvd-backend-575906908337.asia-south1.run.app';
    
     useEffect(() => {
 
-        const socket = new WebSocket('ws://127.0.0.1:8001/ws/progress/');
+        const socket = new WebSocket(`wss://${baseURL}/ws/progress/`);
 
         socket.onopen = () => {
             console.log("Connection successful");
