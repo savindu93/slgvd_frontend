@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState, useRef} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import {Stack, Select, Typography, MenuItem, Box, Button, Container, TextField, Collapse, Alert} from '@mui/material';
+import {Fade, CircularProgress, Stack, Select, Typography, MenuItem, Box, Button, Container, TextField, Collapse, Alert} from '@mui/material';
 import api from '../api';
 import SearchIcon from '@mui/icons-material/Search';
 import dnaImg from '../assets/landing page _ DNA _ 1-Photoroom.png';
@@ -15,6 +15,9 @@ export default function GenSearchBar(){
     const [db, setDb] = useState("ssv")
     const [errorMsg, setErrorMsg] = useState("");
 
+    // Loading overlay 
+    const [loading, setLoading] = useState(false);
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter"){
             buttonref.current.click()
@@ -22,6 +25,8 @@ export default function GenSearchBar(){
     }
 
     const retrieveData = async () => {
+
+        setLoading(true);
 
         console.log("In Retrieve data");
 
@@ -35,17 +40,19 @@ export default function GenSearchBar(){
             })
         }
 
-        console.log(requestOptions)
+        // console.log(requestOptions)
 
         
         try{
             const response = await api.post('/api/retrieve/',requestOptions);
 
-            console.log(response)
+            // console.log(response)
 
             if(response.status == 200){
                 const data = await response.data;
-                console.log(data);
+                // console.log(data);
+
+                setLoading(false);
 
                 navigate('/results', {state: {results: data, db_type: db, query: query}});
 
@@ -53,7 +60,9 @@ export default function GenSearchBar(){
 
         } catch (error){
             
-            setErrorMsg("Data Not Found")                
+            setLoading(false);
+            setErrorMsg("Data Not Found")  
+                          
             console.error("Error fetching variant details", error)
         }
 
@@ -79,6 +88,26 @@ export default function GenSearchBar(){
             }}
 
         >
+            {/* Loading Overlay */}
+            <Fade in={loading} unmountOnExit>
+                <Box
+                    sx = {{
+                        position: 'absolute',
+                        // top: '50%',
+                        // left: '50%',
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 2,
+                        // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(5px)'
+                    }}
+                >
+                    <CircularProgress sx = {{color: "primary.main"}}/>
+                </Box>
+            </Fade>
 
             {/* Background Image */}
 

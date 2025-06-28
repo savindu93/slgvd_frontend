@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useState, useRef} from 'react';
 import {useParams, useNavigate, Navigate} from 'react-router-dom';
-import {Select, MenuItem, Alert, Stack, Typography, Box, Button, Container, TextField, Collapse} from '@mui/material';
+import {Select, MenuItem, Alert, Stack, Typography, Box, Button, Container, TextField, Collapse, Fade, CircularProgress} from '@mui/material';
 import api from '../api';
 import SearchIcon from '@mui/icons-material/Search';
 import dnaImg from '../assets/landing page _ DNA _ 1-Photoroom.png';
@@ -14,6 +14,9 @@ export default function HomeSearchBar(){
     const [query, setQuery] = useState("");
     const [db, setDb] = useState("ssv")
     const [errorMsg, setErrorMsg] = useState("");
+
+    // Loading overlay 
+    const [loading, setLoading] = useState(false);
 
     const handleInput = (e) => {
         setQuery(e.target.value);
@@ -33,6 +36,8 @@ export default function HomeSearchBar(){
 
     const retrieveData = async () => {
 
+        setLoading(true)
+
         // console.log("In Retrieve data");
 
         const requestOptions = {
@@ -50,23 +55,28 @@ export default function HomeSearchBar(){
         try{
             const response = await api.post('/api/retrieve/',requestOptions);
 
-            console.log(response)
+            //console.log(response)
 
             if(response.status == 200){
                 const data = await response.data;
-                console.log(data);
+                // console.log(data);
+
+                setLoading(false)
 
                 navigate('/results', {state: {results: data, db_type: db, query: query}});
             } 
 
         } catch (error){
-            
-            setErrorMsg("Data Not Found")                
+
+            setLoading(false)
+            setErrorMsg("Data Not Found")  
+                          
             console.error("Error fetching variant details", error)
         }
 
     }
 
+    
 
 
     return (
@@ -81,6 +91,27 @@ export default function HomeSearchBar(){
             }}
 
         >
+
+            {/* Loading Overlay */}
+            <Fade in={loading} >
+                <Box
+                    sx = {{
+                        position: 'absolute',
+                        // top: '50%',
+                        // left: '50%',
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 2,
+                        // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                        backdropFilter: 'blur(5px)'
+                    }}
+                >
+                    <CircularProgress sx = {{color: "#D3EEFF"}}/>
+                </Box>
+            </Fade>
 
             {/* Background Image */}
             <Box
@@ -266,6 +297,8 @@ export default function HomeSearchBar(){
                     </MenuItem>
 
                 </Select>
+
+                
                 
                 <Collapse 
                     in = {errorMsg != ""}
@@ -282,6 +315,9 @@ export default function HomeSearchBar(){
                 </Collapse>
                 
             </Container>
+            
+
+            
 
         </Box>
         

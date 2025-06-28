@@ -38,7 +38,7 @@ const CustomTableSortLabel = styled(TableSortLabel)(({theme}) => ({
 
 export default function ResultsTable({results}){
 
-    console.log(results)
+    // console.log(results)
 
     const navigate = useNavigate();
     const userPort = results.userPort;
@@ -174,7 +174,7 @@ export default function ResultsTable({results}){
 
     const [tableRows, combinedData,tot_individuals] = useMemo(() => createEntries(results), [results]);
     const [rows, setRows] = useState(tableRows);
-    console.log(rows)
+    // console.log(rows)
 
     // Contains the consequence and true/ false value pairs
     const consequences = [] 

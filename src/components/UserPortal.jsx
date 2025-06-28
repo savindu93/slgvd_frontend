@@ -1,4 +1,4 @@
-import {TextField, List, Box, Grid2, Button, Typography, Card, CardContent, Collapse, Alert, ListItem, Link, InputLabel, styled, Container, Stack, Accordion, AccordionActions, AccordionSummary, AccordionDetails, FormGroup, FormControl, Select, MenuItem,IconButton, useMediaQuery, useTheme, ButtonGroup, FormLabel, OutlinedInput} from '@mui/material';
+import {Fade, CircularProgress, TextField, List, Box, Grid2, Button, Typography, Card, CardContent, Collapse, Alert, ListItem, Link, InputLabel, styled, Container, Stack, Accordion, AccordionActions, AccordionSummary, AccordionDetails, FormGroup, FormControl, Select, MenuItem,IconButton, useMediaQuery, useTheme, ButtonGroup, FormLabel, OutlinedInput} from '@mui/material';
 import api from '../api';
 import ResultsTable from './ResultsTable';
 import ProgressBar from './ProgressBar';
@@ -32,6 +32,10 @@ export default function UserPortal({results}){
     const user = results;
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
+
+    // Loading overlay 
+    const [loading, setLoading] = useState(false);
+    const [loading_update, setLoadingUpdate] = useState(false);
 
     // For the user's query
     const [query, setQuery] = useState("");
@@ -132,6 +136,8 @@ export default function UserPortal({results}){
 
     const handleUpdate = async () => {
 
+        
+
         console.log(varId)
 
         // Check for errors in the Text fields
@@ -142,6 +148,8 @@ export default function UserPortal({results}){
             }))
         }
         else{
+
+            setLoadingUpdate(true);
 
             const requestOptions = {
                 method: 'POST',
@@ -155,6 +163,8 @@ export default function UserPortal({results}){
                 console.log(response)
     
                 if (response.status == 200){
+
+                    setLoadingUpdate(false);
                     alert("Update Successful")
                 }
                 else{
@@ -162,6 +172,7 @@ export default function UserPortal({results}){
                 }
             }
             catch(error){
+                setLoadingUpdate(false);
                 alert(error)
             }
 
@@ -170,6 +181,8 @@ export default function UserPortal({results}){
     }
 
     const handleRemove = async () => {
+
+        setLoadingUpdate(true);
 
         const requestOptions = {
             method : 'POST',
@@ -184,6 +197,8 @@ export default function UserPortal({results}){
 
             if(response.status == 200){
 
+                setLoadingUpdate(false);
+
                 alert("Entries deleted successfully")
             }
             else{
@@ -193,6 +208,8 @@ export default function UserPortal({results}){
 
         }
         catch(error){
+
+            setLoadingUpdate(false);
             alert(error.response.data.message)
             console.log(error)
         }
@@ -298,6 +315,8 @@ export default function UserPortal({results}){
     // To retrieve data queried by the user
     const retrieveData = async () => {
 
+        setLoading(true);
+
         console.log("In Retrieve data");
 
         const requestOptions = {
@@ -310,15 +329,18 @@ export default function UserPortal({results}){
             })
         }
 
-        console.log(requestOptions)
+        // console.log(requestOptions)
         
         try{
             const response = await api.post('/api/retrieve/',requestOptions);
 
-            console.log(response)
+            //console.log(response)
 
             if(response.status == 200){
                 const data = await response.data;
+
+                setLoading(false);
+
                 setData(data);
                 setUserPort(true);
                 setDb(dbS)
@@ -329,11 +351,12 @@ export default function UserPortal({results}){
                 localStorage.setItem(DATA, JSON.stringify(data))
                 localStorage.setItem(DB, dbS)
 
-                console.log(data);
+                // console.log(data);
             } 
 
         } catch (error){
             
+            setLoading(false);
             setErrorMsg("Data Not Found")                
             console.error("Error fetching variant details", error)
         }
@@ -492,8 +515,8 @@ export default function UserPortal({results}){
                             display:'flex',
                             flexGrow: 1  
                         }}
-                    
                     >
+                        
                         <CardContent
                             sx = {{
                                 width: '100%',
@@ -673,6 +696,7 @@ export default function UserPortal({results}){
                         {/* Search Variants */}
                         <Box 
                             sx ={{
+                                position: 'relative',
                                 width: '100%',
                                 //height: '100%',
                                 overflow: 'hidden',
@@ -681,6 +705,27 @@ export default function UserPortal({results}){
                             }}
 
                         >
+
+                            {/* Loading Overlay */}
+                            <Fade in={loading} unmountOnExit>
+                                <Box
+                                    sx = {{
+                                        position: 'absolute',
+                                        // top: '50%',
+                                        // left: '50%',
+                                        width: '100%',
+                                        height: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        zIndex: 1,
+                                        // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                                        backdropFilter: 'blur(5px)'
+                                    }}
+                                >
+                                    <CircularProgress sx = {{color: "primary.main"}}/>
+                                </Box>
+                            </Fade>
 
                             {/* Search Bar */}
                             <Container
@@ -694,6 +739,8 @@ export default function UserPortal({results}){
                                     
                                 }}    
                             >
+                                
+
                                 <Stack
                                     sx = {{
                                         flexDirection: 'row',
@@ -820,20 +867,20 @@ export default function UserPortal({results}){
                             </Container>
 
                             
-
-
                         </Box>
 
                         {/* Update Entries */}
                         <Accordion 
                             sx ={{
+                                position: 'relative',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 p: 2, pl: 3,
                                 mt: 4,
                                 borderRadius: 4,
                             }}
-                        >
+                        >   
+
                             <AccordionSummary expandIcon = {<ArrowDownwardIcon />}>
                                 <Typography 
                                     textAlign = 'justify'
@@ -845,6 +892,32 @@ export default function UserPortal({results}){
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
+
+                                {/* Loading Overlay */}
+                                {/* <Fade in={loading_update} unmountOnExit>
+                                    <Box
+                                        sx = {{
+                                            position: 'absolute',
+                                            // top: '50%',
+                                            // left: '50%',
+                                            width: '90%',
+                                            height: '80%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            zIndex: 2,
+                                            // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                                            backdropFilter: 'blur(5px)'
+                                        }}
+                                    >
+                                        <Stack>
+                                            <CircularProgress sx = {{color: "primary.main"}}/>
+                                            <Typography variant="caption" sx = {{mt: 1}}>
+                                                Updating...
+                                            </Typography>
+                                        </Stack>
+                                    </Box>
+                                </Fade> */}
                                 
                                 <Stack
                                     sx = {{
@@ -944,8 +1017,17 @@ export default function UserPortal({results}){
 
                                     </Select>
 
+                                    {loading_update ? 
+                                        <Typography variant="caption"
+                                            sx = {{ fontWeight: 'bold'}}                                     
+                                        >
+                                            Update in progress...
+                                        </Typography>: null
+                                    }
+
                                 </FormControl>
 
+                                
                                 <ButtonGroup 
                                     variant = 'contained' 
                                     size = 'small'

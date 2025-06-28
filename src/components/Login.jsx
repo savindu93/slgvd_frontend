@@ -2,7 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import api from '../api'
 import { ACCESS_TOKEN, REFRESH_TOKEN, USER } from '../constants';
-import { Card, CardContent, TextField, Button, FormControl, FormLabel, Typography, Box } from '@mui/material';
+import { Fade, CircularProgress, Card, CardContent, TextField, Button, FormControl, FormLabel, Typography, Box } from '@mui/material';
 
 export default function Login({route, method}){
 
@@ -20,7 +20,13 @@ export default function Login({route, method}){
 
     const name = method === 'login' ? 'Login': 'Register'
 
+    // Loading overlay 
+    const [loading, setLoading] = useState(false);
+
+
     const handleSubmit = async (e) => {
+
+        setLoading(true);
 
         e.preventDefault();
         const newErrors = {
@@ -29,24 +35,26 @@ export default function Login({route, method}){
         };
 
         setErrors(newErrors);
-        console.log({email, password})
+        // console.log({email, password})
 
         try{
 
             const res = await api.post(route, {email, password})
             const user = res.data.user;
 
-            console.log({
-                "user":res.data.user,
-                "access": res.data.access,
-                "refresh": res.data.refresh})
+            // console.log({
+            //     "user":res.data.user,
+            //     "access": res.data.access,
+            //     "refresh": res.data.refresh})
 
-            //console.log(JSON.stringify(user));
+            // console.log(JSON.stringify(user));
 
             if(method === 'login'){
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
                 localStorage.setItem(USER, JSON.stringify(user));
+
+                setLoading(false);
 
                 navigate("/submit-data", {state : {results:user}})
                 
@@ -56,6 +64,7 @@ export default function Login({route, method}){
 
         } catch (error){
             
+            setLoading(false);
             alert(error)
         }
     }
@@ -77,6 +86,8 @@ export default function Login({route, method}){
             }}
 
         >
+
+
             {/* Textfields to enter login credentials */}
             <Card
                 sx = {{
@@ -86,7 +97,28 @@ export default function Login({route, method}){
                     p:3
                 }}
             
-            >
+            >   
+                {/* Loading Overlay */}
+                <Fade in={loading} unmountOnExit>
+                    <Box
+                        sx = {{
+                            position: 'absolute',
+                            // top: '50%',
+                            // left: '50%',
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                            // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                            backdropFilter: 'blur(5px)'
+                        }}
+                    >
+                        <CircularProgress sx = {{color: "primary.main"}}/>
+                    </Box>
+                </Fade>  
+                       
                 <CardContent 
                     sx = {{
                         display: 'flex',
@@ -136,6 +168,8 @@ export default function Login({route, method}){
 
                 </CardContent>
             </Card>
+        
+
         </Box>
 
 
