@@ -14,8 +14,8 @@ export default function ResultsPage(){
     const query = location.state?.query;
     const userPort = false;
 
-    console.log(db)
-    console.log(data)
+    // console.log(db)
+    // console.log(data)
 
 
     return (
