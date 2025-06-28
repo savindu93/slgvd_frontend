@@ -75,6 +75,7 @@ export default function Login({route, method}){
             component = 'form'
             onSubmit = {handleSubmit}
             sx = {{
+                position: 'relative',
                 display : 'flex',
                 gap: 2,
                 maxwidth: '500',
@@ -118,7 +119,7 @@ export default function Login({route, method}){
                         <CircularProgress sx = {{color: "primary.main"}}/>
                     </Box>
                 </Fade>  
-                       
+
                 <CardContent 
                     sx = {{
                         display: 'flex',
