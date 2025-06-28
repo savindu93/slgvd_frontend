@@ -75,7 +75,6 @@ export default function Login({route, method}){
             component = 'form'
             onSubmit = {handleSubmit}
             sx = {{
-                position: 'relative',
                 display : 'flex',
                 gap: 2,
                 maxwidth: '500',
@@ -92,13 +91,35 @@ export default function Login({route, method}){
             {/* Textfields to enter login credentials */}
             <Card
                 sx = {{
+                    position: 'relative',
                     borderRadius:4,
                     width: '500px',
                     mx:'auto',
                     p:3
                 }}
+                
+            >
             
-            >     
+                {/* Loading Overlay */}
+                <Fade in={loading} unmountOnExit>
+                    <Box
+                        sx = {{
+                            position: 'absolute',
+                            // top: '50%',
+                            // left: '50%',
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 2,
+                            // bgcolor: 'rgba(255, 255, 255, 0.8)',
+                            backdropFilter: 'blur(5px)'
+                        }}
+                    >
+                        <CircularProgress sx = {{color: "primary.main"}}/>
+                    </Box>
+                </Fade>
 
                 <CardContent 
                     sx = {{
@@ -108,26 +129,6 @@ export default function Login({route, method}){
                     }}
                 >
 
-                    {/* Loading Overlay */}
-                    <Fade in={loading} unmountOnExit>
-                        <Box
-                            sx = {{
-                                position: 'absolute',
-                                // top: '50%',
-                                // left: '50%',
-                                width: '100%',
-                                height: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                zIndex: 2,
-                                // bgcolor: 'rgba(255, 255, 255, 0.8)',
-                                backdropFilter: 'blur(5px)'
-                            }}
-                        >
-                            <CircularProgress sx = {{color: "primary.main"}}/>
-                        </Box>
-                    </Fade>
 
                     <Typography variant = 'subtitle1' textAlign = 'center' sx = {{color:'primary.dark'}}> Login </Typography>
 
