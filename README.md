@@ -1,8 +1,14 @@
-# React + Vite
+# Sri Lanka Genetic Variation Database (SLGVD)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SLGVD is **the only primary database for genetic variant 🧬 data on Sri Lankans** hosted by the Faculty of Medicine, University of Colombo.
 
-Currently, two official plugins are available:
+The 2nd iteration of SLGVD serves as an archive for single nucleotide variants (SNVs), short indels, and germline copy number variants (gCNVs). It also allows users to search for variants using complex queries. Moreover, it provides a platform for users to download ⬇️, upload ⬆️, edit 🖋️ and remove variant data.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The web application was developed as,
+- A React application with
+- A back-end implemented using Django and
+- A SQL database that serves as the primary storage unit for the variation data at SLGVD.
+
+The Django Rest Framework provides a public REST API for users to programmetically access the data in the database.
+
+***The following repo presents the implementation of the frontend of the SLGVD.***
