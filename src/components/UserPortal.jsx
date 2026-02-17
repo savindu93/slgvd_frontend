@@ -265,7 +265,7 @@ export default function UserPortal({results}){
             if (response.status == 200){
 
                 setRes(response.status)
-                setLog(response.data.log)
+                // setLog(response.data.log)
 
             }
             
@@ -373,17 +373,17 @@ export default function UserPortal({results}){
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({data:log, type: 'txt/plain'}),
-            responseType: 'blob'
+            body: JSON.stringify({data:log, type: 'zip'}),
+            // responseType: 'blob'
         }
 
         try{
-            const response = await api.post('/api/download/', requestOptions);
+            const response = await api.post('/api/download/', requestOptions, {responseType: 'blob');
             console.log(response)
 
             if (response.status == 200){
 
-                const blob = new Blob([response.data], {type: 'text/plain'})
+                const blob = new Blob([response.data], {type: 'application/zip'})
                 const url = window.URL.createObjectURL(blob)
 
                 const a = document.createElement('a')
