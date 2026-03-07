@@ -378,7 +378,7 @@ export default function UserPortal({results}){
         }
 
         try{
-            const response = await api.post('/api/download/', requestOptions, {responseType: 'blob');
+            const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'};
             console.log(response)
 
             if (response.status == 200){
