@@ -126,7 +126,7 @@ export default function ResultsTable({results}){
                 rows.push({
                     variation_id, 
                     chromosome: (chromosome == 'X' || chromosome == 'Y') ? chromosome : parseInt(chromosome,10),
-                    allele_freq : ((homo_count * 2 + het_count)/ (tot_individuals * 2)).toPrecision(4),
+                    allele_freq : (((homo_count * 2) + het_count)/ (tot_individuals * 2)).toPrecision(4),
                     consequence,
                     gene_name,
                     submission_date
