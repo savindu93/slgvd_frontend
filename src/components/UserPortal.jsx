@@ -38,7 +38,7 @@ function Popup({message, onClose}){
                 minWidth: "300px", textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
             }}>
 
-                <Typography sx={{ fontSize: "18px", marginBottom: "20px", color: "primary"}}> {message} </Typography>
+                <Typography variant = "body1" sx={{marginBottom: "20px", color: "primary"}}> {message} </Typography>
                 <Button variant = "contained" onClick={onClose} sx={{
                     padding: "8px 24px", backgroundColor: "primary.main",
                     color: "white", border: "none", borderRadius: "6px", cursor: "pointer",
