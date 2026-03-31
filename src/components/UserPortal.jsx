@@ -23,6 +23,35 @@ const VisuallyHiddenInput = styled('input')({
 
 })
 
+function Popup({message, onClose}){
+
+    return(
+
+        <div style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 1000,
+        }}>
+            <div style={{
+                background: "white", borderRadius: "10px", padding: "30px",
+                minWidth: "300px", textAlign: "center", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+            }}>
+
+                <p style={{ fontSize: "18px", marginBottom: "20px" }}> {message} </p>
+                <button onClick={onClose} style={{
+                    padding: "8px 24px", backgroundColor: "primary",
+                    color: "white", border: "none", borderRadius: "6px", cursor: "pointer",
+                }}>
+                    OK
+                </button>
+            </div>
+        </div>
+    );
+    
+}
+
+
 
 export default function UserPortal({results}){
 
@@ -33,6 +62,8 @@ export default function UserPortal({results}){
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
+    // Popup window
+    const [showPopup, setShowPopup] = useState(false); 
     // Loading overlay 
     const [loading, setLoading] = useState(false);
     const [loading_update, setLoadingUpdate] = useState(false);
@@ -270,6 +301,8 @@ export default function UserPortal({results}){
             }
             
             console.log('Response', response.data)
+
+            setShowPopup(true);
 
         } catch (error){
 
@@ -591,6 +624,14 @@ export default function UserPortal({results}){
                                     >
                                         Submit
                                     </Button>
+
+                                    {/* Popup window for messages*/}
+                                    {showPopup && (
+                                        <Popup message = "File processing will begin shortly!"
+                                            onClose = {() => setShowPopup(false)}
+                                        />
+                                    )}
+                                    
                                     <Button
                                         disabled = {!log}
                                         onClick = {handleDownload}
@@ -607,7 +648,7 @@ export default function UserPortal({results}){
                 </Grid2>
 
                 {/* Right: Summary of variants submitted by user  */}
-                <Grid2 size = 'grow' sx = {{m: 3,maxHeight:'max-content', display:'flex'}}>
+                <Grid2 size = 'grow' sx = {{m: 3, maxHeight:'max-content', display:'flex'}}>
                     <Card 
                         sx = {{
                             borderRadius: 4, 
