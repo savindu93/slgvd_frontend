@@ -41,7 +41,7 @@ function Popup({message, onClose}){
                 <Typography variant = "body1" sx={{marginBottom: "20px", color: "primary"}}> {message} </Typography>
                 <Button variant = "contained" onClick={onClose} sx={{
                     padding: "8px 24px", backgroundColor: "primary.main",
-                    color: "white", border: "none", borderRadius: "6px", cursor: "pointer",
+                    color: "white", border: "none", borderRadius: "10px", cursor: "pointer",
                 }}>
                     OK
                 </Button>
@@ -258,7 +258,8 @@ export default function UserPortal({results}){
     const [fileType, setFileType] = useState('');
     const [files, setFiles] = useState([]);
     const [res, setRes] = useState(null);
-    const [log, setLog] = useState(null);
+    const [log, setLog] = useState(false);
+    const [jobId, setJobId] - useState(null);
     
 
     const handleFileType = (event) => {
@@ -293,10 +294,11 @@ export default function UserPortal({results}){
                 {headers: {'Content-Type':'multipart/form-data'}}
             );
 
-            if (response.status == 200){
+            if (response.status == 202){
 
                 setRes(response.status)
-                // setLog(response.data.log)
+                setLog(true)
+                setJobId(response.data.job_id)
 
             }
             
@@ -406,27 +408,35 @@ export default function UserPortal({results}){
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({data:log, type: 'zip'}),
+            body: JSON.stringify({job_id: jobId, type: 'zip'}),
             // responseType: 'blob'
         }
 
         try{
-            const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
+            // const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
+            const response = await api.post('/api/download/', requestOptions);
+            
             console.log(response)
 
             if (response.status == 200){
 
-                const blob = new Blob([response.data], {type: 'application/zip'})
-                const url = window.URL.createObjectURL(blob)
+                window.open(response.data.download_url, '_blank');
 
-                const a = document.createElement('a')
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'Submission_Log.txt';
+                // const blob = new Blob([response.data], {type: 'application/zip'})
+                // const url = window.URL.createObjectURL(blob)
 
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
+                // const a = document.createElement('a')
+                // a.style.display = 'none';
+                // a.href = url;
+                // a.download = 'Submission_Log.txt';
+
+                // document.body.appendChild(a);
+                // a.click();
+                // window.URL.revokeObjectURL(url);
+                
+            } else if (response.status == 202){
+
+                alert(response.data.message)                
 
             } else{
                 console.error("Failed to create a download file");
