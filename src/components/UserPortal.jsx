@@ -413,26 +413,24 @@ export default function UserPortal({results}){
         }
 
         try{
-            // const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
-            const response = await api.post('/api/download/', requestOptions);
+            const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
+            
             
             console.log(response)
 
             if (response.status == 200){
 
-                window.open(response.data.download_url, '_blank');
+                const blob = new Blob([response.data])
+                const url = window.URL.createObjectURL(blob)
 
-                // const blob = new Blob([response.data], {type: 'application/zip'})
-                // const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'Submission_Log.txt';
 
-                // const a = document.createElement('a')
-                // a.style.display = 'none';
-                // a.href = url;
-                // a.download = 'Submission_Log.txt';
-
-                // document.body.appendChild(a);
-                // a.click();
-                // window.URL.revokeObjectURL(url);
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
                 
             } else if (response.status == 202){
 
