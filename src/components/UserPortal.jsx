@@ -259,7 +259,7 @@ export default function UserPortal({results}){
     const [files, setFiles] = useState([]);
     const [res, setRes] = useState(null);
     const [log, setLog] = useState(false);
-    const [jobId, setJobId] - useState(null);
+    const [jobId, setJobId] = useState(null);
     
 
     const handleFileType = (event) => {
