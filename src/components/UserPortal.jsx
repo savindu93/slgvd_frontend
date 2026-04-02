@@ -434,7 +434,8 @@ export default function UserPortal({results}){
                 
             } else if (response.status == 202){
 
-                alert(blob.text())                
+                const text = await blob.text()
+                alert(text)                
 
             } else{
                 console.error("Failed to create a download file");
