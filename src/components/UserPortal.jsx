@@ -415,12 +415,12 @@ export default function UserPortal({results}){
         try{
             const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
             
-            
+            const blob = new Blob([response.data])
             console.log(response)
 
             if (response.status == 200){
 
-                const blob = new Blob([response.data])
+                
                 const url = window.URL.createObjectURL(blob)
 
                 const a = document.createElement('a')
@@ -434,7 +434,7 @@ export default function UserPortal({results}){
                 
             } else if (response.status == 202){
 
-                alert(response.data.message)                
+                alert(blob.text())                
 
             } else{
                 console.error("Failed to create a download file");
