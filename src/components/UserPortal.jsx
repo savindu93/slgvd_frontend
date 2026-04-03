@@ -415,18 +415,17 @@ export default function UserPortal({results}){
         try{
             const response = await api.post('/api/download/', requestOptions, {responseType: 'blob'});
             
-            const blob = new Blob([response.data])
             console.log(response)
 
             if (response.status == 200){
 
-                
+                const blob = new Blob([response.data], {type: 'application/zip'})
                 const url = window.URL.createObjectURL(blob)
 
                 const a = document.createElement('a')
                 a.style.display = 'none';
                 a.href = url;
-                a.download = 'Submission_Log.txt';
+                a.download = 'Submission_Log.zip';
 
                 document.body.appendChild(a);
                 a.click();
@@ -434,6 +433,7 @@ export default function UserPortal({results}){
                 
             } else if (response.status == 202){
 
+                const blob = new Blob([response.data])
                 const text = await blob.text()
                 alert(JSON.parse(text).message)                
 
