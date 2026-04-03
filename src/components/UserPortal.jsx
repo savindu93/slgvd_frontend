@@ -269,6 +269,7 @@ export default function UserPortal({results}){
     const handleFileChange = (event) => {
         setLog(null)
         setFiles(event.target.files)
+        setOpenD(false)
     };
 
     const handleUpload = async () => {
