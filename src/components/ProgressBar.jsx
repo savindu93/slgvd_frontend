@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Typography, LinearProgress, Button} from '@mui/material';
+import {Box, Typography, LinearProgress, Button, CircularProgress} from '@mui/material';
 
 const ProgressBar = () => {
 
@@ -63,7 +63,7 @@ const ProgressBar = () => {
                     variant = 'determinate' 
                     value = {progress} 
                     sx = {{width: '100%', my:'auto'}}
-                /> : null
+                /> : <CircularProgress sx = {{color: "#D3EEFF"}}/>
                 }
                 {progress? 
                 <Typography  sx ={{px:1, pr:4}}>
