@@ -59,11 +59,12 @@ const ProgressBar = () => {
             
                 }
                 {progress === null || progress === 0?
+                <CircularProgress sx = {{color: "#D3EEFF"}}/> :
                 <LinearProgress 
                     variant = 'determinate' 
                     value = {progress} 
                     sx = {{width: '100%', my:'auto'}}
-                /> : <CircularProgress sx = {{color: "#D3EEFF"}}/>
+                />  
                 }
                 {progress? 
                 <Typography  sx ={{px:1, pr:4}}>
