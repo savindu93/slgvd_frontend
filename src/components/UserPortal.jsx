@@ -624,7 +624,7 @@ export default function UserPortal({results}){
                                     
                                         }
                                 </List>
-                                {files? <ProgressBar />: null}
+                                {openD? <ProgressBar />: null}
                                 <ButtonGroup variant = 'contained' color = 'primary'>
                                     <Button
                                         onClick = {handleUpload}
