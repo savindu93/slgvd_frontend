@@ -15,7 +15,7 @@ const ProgressBar = () => {
         socket.onopen = () => {
             console.log("Connection successful");
 
-            // ✅ Send ping every 30 seconds to keep connection alive
+            // Send ping every 30 seconds to keep connection alive
             pingInterval = setInterval(() => {
                 if (socket.readyState === WebSocket.OPEN) {
                     socket.send(JSON.stringify({ type: 'ping' }));
@@ -29,7 +29,7 @@ const ProgressBar = () => {
             console.log(data)
 
             if (data.type === 'connection_established') return;
-            if (data.type === 'pong') return;  // ✅ ignore pong responses
+            if (data.type === 'pong') return;  // ignore pong responses
             
             setProgress(data.progress)
             setStatus(data.status)
@@ -42,12 +42,15 @@ const ProgressBar = () => {
         socket.onclose = () => {
 
             console.log("Connection closed");
-            clearInterval(pingInterval);  // ✅ stop ping on close
+            clearInterval(pingInterval);  // stop ping on close
+
+            // Reconnect after 3 seconds
+            setTimeout(() => connectWebSocket(), 3000)
         }
 
         return () => {
             socket.close()
-            clearInterval(pingInterval);  // ✅ stop ping on unmount
+            clearInterval(pingInterval);  // stop ping on unmount
         }
 
     }, [])
