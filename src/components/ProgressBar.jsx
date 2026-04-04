@@ -6,52 +6,64 @@ const ProgressBar = () => {
     const [progress, setProgress] = useState(0);
     const [status, setStatus] = useState("");
     const baseURL = 'slgvd-backend-575906908337.asia-south1.run.app';
-   
+
+        
     useEffect(() => {
 
-        const socket = new WebSocket(`wss://${baseURL}/ws/progress/`);
         let pingInterval = null;
+        let socket = null;
 
-        socket.onopen = () => {
-            console.log("Connection successful");
+        const connectWebSocket = () => {
 
-            // Send ping every 30 seconds to keep connection alive
-            pingInterval = setInterval(() => {
-                if (socket.readyState === WebSocket.OPEN) {
-                    socket.send(JSON.stringify({ type: 'ping' }));
-                }
-            }, 30000);
-        }
-
-
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log(data)
-
-            if (data.type === 'connection_established') return;
-            if (data.type === 'pong') return;  // ignore pong responses
+            socket = new WebSocket(`wss://${baseURL}/ws/progress/`);
             
-            setProgress(data.progress)
-            setStatus(data.status)
+    
+            socket.onopen = () => {
+                console.log("Connection successful");
+    
+                // Send ping every 30 seconds to keep connection alive
+                pingInterval = setInterval(() => {
+                    if (socket.readyState === WebSocket.OPEN) {
+                        socket.send(JSON.stringify({ type: 'ping' }));
+                    }
+                }, 30000);
+            }
+    
+    
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log(data)
+    
+                if (data.type === 'connection_established') return;
+                if (data.type === 'pong') return;  // ignore pong responses
+                
+                setProgress(data.progress)
+                setStatus(data.status)
+            }
+    
+            socket.onerror = (event) => {
+                console.log("websocket error", event)
+            }
+    
+            socket.onclose = () => {
+    
+                console.log("Connection closed");
+                clearInterval(pingInterval);  // stop ping on close
+    
+                // Reconnect after 3 seconds
+                setTimeout(() => connectWebSocket(), 3000)
+            }
+    
+            
         }
 
-        socket.onerror = (event) => {
-            console.log("websocket error", event)
-        }
-
-        socket.onclose = () => {
-
-            console.log("Connection closed");
-            clearInterval(pingInterval);  // stop ping on close
-
-            // Reconnect after 3 seconds
-            setTimeout(() => connectWebSocket(), 3000)
-        }
+        connectWebSocket()
 
         return () => {
-            socket.close()
-            clearInterval(pingInterval);  // stop ping on unmount
+                socket.close()
+                clearInterval(pingInterval);  // stop ping on unmount
         }
+        
 
     }, [])
 
