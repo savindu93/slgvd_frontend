@@ -10,14 +10,26 @@ const ProgressBar = () => {
     useEffect(() => {
 
         const socket = new WebSocket(`wss://${baseURL}/ws/progress/`);
+        let pingInterval = null;
 
         socket.onopen = () => {
             console.log("Connection successful");
+
+            // ✅ Send ping every 30 seconds to keep connection alive
+            pingInterval = setInterval(() => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({ type: 'ping' }));
+                }
+            }, 30000);
         }
+
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log(data)
+
+            if (data.type === 'connection_established') return;
+            if (data.type === 'pong') return;  // ✅ ignore pong responses
             
             setProgress(data.progress)
             setStatus(data.status)
@@ -30,10 +42,12 @@ const ProgressBar = () => {
         socket.onclose = () => {
 
             console.log("Connection closed");
+            clearInterval(pingInterval);  // ✅ stop ping on close
         }
 
         return () => {
             socket.close()
+            clearInterval(pingInterval);  // ✅ stop ping on unmount
         }
 
     }, [])
